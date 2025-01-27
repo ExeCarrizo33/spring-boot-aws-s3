@@ -7,6 +7,7 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.S3Client;
 
 import java.net.URI;
@@ -32,6 +33,20 @@ public class S3Config {
         AwsCredentials basicCredentials = AwsBasicCredentials.create(awsAccessKey, awsSecretKey);
 
         return S3Client.builder()
+                .region(Region.of(region))
+                .endpointOverride(URI.create("https://s3.us-east-1.amazonaws.com"))
+                .credentialsProvider(StaticCredentialsProvider.create(basicCredentials))
+                .build();
+    }
+
+    /**
+     * Cliente S3 Syncrono
+     */
+    @Bean
+    public S3AsyncClient getyS3AsyncClient(){
+        AwsCredentials basicCredentials = AwsBasicCredentials.create(awsAccessKey, awsSecretKey);
+
+        return S3AsyncClient.builder()
                 .region(Region.of(region))
                 .endpointOverride(URI.create("https://s3.us-east-1.amazonaws.com"))
                 .credentialsProvider(StaticCredentialsProvider.create(basicCredentials))
