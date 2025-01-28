@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@RequestMapping("s3")
+@RequestMapping("/s3")
 @RequiredArgsConstructor
 public class AppController {
 
@@ -29,7 +29,7 @@ public class AppController {
     }
 
     @GetMapping("/check/{bucketName}")
-    public ResponseEntity<String> checkIfBucketExist(@RequestParam String bucketName) {
+    public ResponseEntity<String> checkIfBucketExist(@PathVariable String bucketName) {
         return ResponseEntity.ok(this.s3Service.checkIfBucketExist(bucketName));
     }
 
