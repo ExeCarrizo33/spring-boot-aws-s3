@@ -3,9 +3,12 @@ package com.s3.api.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -65,8 +68,33 @@ public class S3ServiceImpl implements IS3Service{
     }
 
     @Override
-    public String downloadFile(String bucketName, String key) throws IOException {
-        return null;
+    public void downloadFile(String bucketName, String key) throws IOException {
+
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
+
+        ResponseBytes<GetObjectResponse> objectBytes = this.s3Client.getObjectAsBytes(getObjectRequest);
+
+        String filename;
+        if (key.contains("/")) {
+            filename = key.substring(key.lastIndexOf("/"));
+        }else {
+            filename = key;
+        }
+
+        String filePath = Paths.get(destinationFolder, filename).toString();
+
+        File file = new File(filePath);
+        file.getParentFile().mkdir();
+
+        try(FileOutputStream fileOutputStream = new FileOutputStream(file)){
+            fileOutputStream.write(objectBytes.asByteArray());
+        } catch (IOException e) {
+            throw  new IOException("Error al descargar el archivo " + e.getCause());
+        }
+
     }
 
     @Override

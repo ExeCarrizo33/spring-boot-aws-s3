@@ -20,7 +20,7 @@ public interface IS3Service {
     Boolean uploadFile(String bucketName, String key, Path fileLocation);
 
     //Descargar archivo de un bucket
-    String downloadFile(String bucketName, String key) throws IOException;
+    void downloadFile(String bucketName, String key) throws IOException;
 
     // Generar URL prefirmada para subir archivos
     String generatePresignedUploadUrl(String bucketName, String key, Duration duration);
